@@ -1,6 +1,6 @@
 import docker
 
-def new_minecraft(name):
+def new_minecraft(name, op):
 
     client = docker.from_env()
     # itzg/minecraft-server
@@ -14,12 +14,14 @@ def new_minecraft(name):
         env = [
                 "EULA=TRUE",
                 "ONLINE_MODE=FALSE",
+                "OPS={}".format(op),
                 "MOTD=Salt powered",
                 "ENABLE_RCON=false",
                 "SERVER_PORT=25565"
         ]
 
         client.containers.run("itzg/minecraft-server:latest",
+                              name="mc_"+name,
                               environment=env,
                               ports={'25565/tcp': exposed_port},
                               detach=True)

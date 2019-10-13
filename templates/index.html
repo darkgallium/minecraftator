@@ -1,11 +1,105 @@
 <html>
 	<head>
 		<title>Minecraftron</title>
+		<link rel="stylesheet" href="https://unpkg.com/picnic">
+		
+		<style>
+			.card {
+				width: 600px;
+				margin-left: auto;
+				margin-right: auto;
+				margin-top: auto;
+				top: 50%;
+				transform: translateY(-50%);
+			}
+
+			input {
+				margin: 10px !important;
+			}
+
+			.alert {
+				
+				position: relative;
+				padding: .75rem 1.25rem;
+				margin-top: 1.2rem;
+				margin-bottom: 1rem;
+				border: 1px solid transparent;
+				border-radius: .25rem;
+			}
+
+
+			.ok {
+				color: #0c5460;
+                                background-color: #d1ecf1;
+                                border-color: #bee5eb;
+			}
+
+			.err {
+				color: #721c24;
+				background-color: #f8d7da;
+				border-color: #f5c6cb;	
+
+			}
+
+		</style>
+
 	</head>
 
 	<body>
-		<h1>The Minecraftron</h1>
-		<h2>Generates on demand Minecraft servers</h2>
+
+		<article class="card">
+			<header>
+				<h1>Minecraftron</h1>
+				<h3 style="margin-top: 10px">Your average Minecraft server summonner</h3>
+				
+				<div id="msg">
+				</div>
+	
+				<div style="margin-top: 15px;" class="flex">	
+					<input id="name" type="text" placeholder="Nom du serveur">
+					<input id="op" type="text" placeholder="Pseudo de l'admin">
+					<input id="new" value="Nouveau serveur" type="submit">
+				</div>
+			</header>
+		</article>
+
+		<script>
+
+		document.getElementById("new").addEventListener("click", function() {
+		
+			console.log("on your marks");
+			
+			let name = document.getElementById("name").value;
+			let op = document.getElementById("op").value;
+			let request = new XMLHttpRequest();
+
+			request.open('GET', '/new/'+name+'/'+op+'/', true);
+
+			request.onload = function() {
+				let res = JSON.parse(this.response);
+				let a = "";
+
+				if (res["status"] == "ok") {
+					a = "<div class=\"alert ok\"><b>Serveur créé !</b><br><small>Adresse : minecraft.insalan.fr:"+res.port+"</small></div>";
+				}
+
+				else {
+					a = "<div class=\"alert err\"><b>Erreur !</b><br><small>"+res.message+"</small></div>";
+				}
+
+				document.getElementById("msg").innerHTML = a;
+
+			};
+
+			request.onerror = function() {
+				// There was a connection error of some sort
+			};
+
+			request.send();
+
+		})
+
+		</script>
 
 	</body>
 </html>
